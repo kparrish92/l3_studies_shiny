@@ -1,0 +1,63 @@
+---
+title: "Systematic Review (Rothman et al., 2019)"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+There were two systematic reviews done by Rothman and colleagues. The first was done in 2018, but officially published in 2020 ([(Puig-Mayenco et al. , 2020)](https://doi.org/10.1177/0267658318809147).
+The information coded here contains information from updated systematic review coded from the appendix reported in [Rothman et al. (2019)](https://doi.org/10.1017/9781316014660).
+
+```{r, include = FALSE}
+library(shiny)
+library(reactable)
+library(here)
+library(tidyverse)
+```
+
+```{r}
+
+options(reactable.theme = reactableTheme(
+  color = "hsl(233, 9%, 87%)",
+  backgroundColor = "hsl(233, 9%, 19%)",
+  borderColor = "hsl(233, 9%, 22%)",
+  stripedColor = "hsl(233, 12%, 22%)",
+  highlightColor = "hsl(233, 12%, 24%)",
+  inputStyle = list(backgroundColor = "hsl(233, 9%, 25%)"),
+  selectStyle = list(backgroundColor = "hsl(233, 9%, 25%)"),
+  pageButtonHoverStyle = list(backgroundColor = "hsl(233, 9%, 25%)"),
+  pageButtonActiveStyle = list(backgroundColor = "hsl(233, 9%, 28%)")
+))
+
+ui <- fluidPage(
+  reactableOutput("table")
+)
+
+data <- read.csv(here("data", "studies.csv")) %>% 
+  janitor::clean_names() %>% 
+  select(l1_influence, l2_status, typology, hybrid_influence,
+         mirror_image_groups, author_year, l3, other_languages,
+         non_facilitative_transfer, doi)
+
+reactable(data, filterable = TRUE, searchable = TRUE, minRows = 10, columns = 
+            list(doi = colDef(show = FALSE),
+                 l1_influence = colDef(name = "L1 Influence"),
+                 l2_status = colDef(name = "L2 Influence"),
+                 typology = colDef(name = "Typological"),
+                 hybrid_influence = colDef(name = "Hybrid"),
+                 mirror_image_groups = colDef(name = "Mirror Image"), 
+                 other_languages = colDef(name = "Other Languages"),
+                 l3 = colDef(name = "L3"),
+                 non_facilitative_transfer = colDef(name = "Non-facilitative transfer"),
+  author_year = colDef(name = "Author (year)",html = TRUE, cell = JS("
+    function(cellInfo) {
+      // Render as a link
+      const url = 'https://' + cellInfo.row['doi']
+      return '<a href=\"' + url + '\" target=\"_blank\">' + cellInfo.value + '</a>'
+    }
+  "))))
+```
+

@@ -1,0 +1,23 @@
+data <- MASS::Cars93[1:5, c("Manufacturer", "Model", "Type", "AirBags", "Price")]
+
+reactable(data, columns = list(
+  Model = colDef(html = TRUE, cell = JS("
+    function(cellInfo) {
+      // Render as a link
+      const url = 'https://wikipedia.org/wiki/' + cellInfo.row['Manufacturer'] + '_' + cellInfo.value
+      return '<a href=\"' + url + '\" target=\"_blank\">' + cellInfo.value + '</a>'
+    }
+  ")),
+  AirBags = colDef(cell = JS("
+    function(cellInfo) {
+      // Render as an X mark or check mark
+      return cellInfo.value === 'None' ? '\u274c No' : '\u2714\ufe0f Yes'
+    }
+  ")),
+  Price = colDef(cell = JS("
+    function(cellInfo) {
+      // Render as currency
+      return '$' + (cellInfo.value * 1000).toLocaleString()
+    }
+  "))
+))

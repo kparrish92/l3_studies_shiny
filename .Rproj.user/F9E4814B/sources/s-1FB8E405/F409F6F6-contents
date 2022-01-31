@@ -1,0 +1,8 @@
+reactable(data, searchable = TRUE,filterable = TRUE, minRows = 10, columns = list(
+  author_year = colDef(html = TRUE, cell = JS("
+    function(cellInfo) {
+      // Render as a link
+      const url = 'https://' + cellInfo.row['doi']
+      return '<a href=\"' + url + '\" target=\"_blank\">' + cellInfo.value + '</a>'
+    }
+  "))))

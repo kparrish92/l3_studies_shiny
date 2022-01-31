@@ -1,0 +1,21 @@
+library(plotly)
+
+
+data <- read.csv(here("data", "studies.csv")) %>% 
+  janitor::clean_names() %>% 
+  select(l1_influence, l2_influence, typological_influence, hybrid_influence,
+         mirror_image_groups, author_year, l3, other_languages, non_facilitative_transfer)
+
+dat = data.frame(name = c("L1", "L2", "Typological"),
+                 "value" = c(sum(data$l1_influence), 
+                             sum(data$l2_influence), 
+                             sum(data$typological_influence)))
+
+
+
+fig <- plot_ly(dat, labels = ~name, values = ~value, type = 'pie')
+fig <- fig %>% layout(title = 'Influence by Study',
+                      xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
+                      yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
+
+fig

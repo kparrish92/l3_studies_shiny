@@ -1,0 +1,19 @@
+library(reactable)
+library(here)
+library(tidyverse)
+
+data <- read.csv(here("data", "studies.csv")) %>% 
+  janitor::clean_names() %>% 
+  select(l1_influence, l2_influence, typological_influence, hybrid_influence,
+         mirror_image_groups, author_year, l3, other_languages, non_facilitative_transfer) %>% 
+  mutate(url = "google.com")
+
+# data <- MASS::Cars93[1:5, c("Manufacturer", "Model", "Type", "AirBags", "Price")]
+
+reactable(data, columns = list(
+  author_year = colDef(cell = function(value, index) {
+    # Render as a link
+    url <- sprintf("https://wikipedia.org/wiki/%s_%s", data[index, "url"], value)
+    htmltools::tags$a(href = url, target = "_blank", as.character(value))
+  })
+))

@@ -1,0 +1,36 @@
+if (interactive()) {
+  library(shiny)
+  library(ECharts2Shiny)
+  library(tidyverse)
+  library(here)
+
+  data <- read.csv(here("data", "studies.csv")) %>% 
+    janitor::clean_names() %>% 
+    select(l1_influence, l2_influence, typological_influence, hybrid_influence,
+           mirror_image_groups, author_year, l3, other_languages, non_facilitative_transfer)
+  
+  dat = data.frame(name = c("L1", "L2", "Typological"),
+             "value" = c(sum(data$l1_influence), 
+                        sum(data$l2_influence), 
+                        sum(data$typological_influence)))
+    
+  
+  
+  # Server function -------------------------------------------
+  server <- function(input, output) {
+    renderPieChart(div_id = "test",
+                   data = dat)
+  }
+  
+  # UI layout -------------------------------------------------
+  ui <- fluidPage(
+    # We MUST load the ECharts javascript library in advance
+    loadEChartsLibrary(),
+    
+    tags$div(id="test", style="width:50%;height:400px;"),
+    deliverChart(div_id = "test")
+  )
+  
+  # Run the application --------------------------------------
+  shinyApp(ui = ui, server = server)
+}
